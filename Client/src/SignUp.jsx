@@ -37,7 +37,7 @@ export default function SignUp() {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.firstName.trim()) {
       newErrors.firstName = 'First name is required';
     }
@@ -68,7 +68,7 @@ export default function SignUp() {
         newErrors.dateOfBirth = 'You must be at least 13 years old';
       }
     }
-    
+
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
@@ -76,26 +76,26 @@ export default function SignUp() {
     } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
       newErrors.password = 'Password must contain uppercase, lowercase, and number';
     }
-    
+
     if (!formData.confirmPassword) {
       newErrors.confirmPassword = 'Please confirm your password';
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-    
+
     if (!acceptedTerms) {
       newErrors.terms = 'You must accept the terms and conditions';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async () => {
     if (!validateForm()) return;
-    
+
     setIsLoading(true);
-    
+
     // Simulate API call
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -153,7 +153,7 @@ export default function SignUp() {
                   <p className="text-sm text-red-600">{errors.firstName}</p>
                 )}
               </div>
-              
+
               <div className="space-y-2">
                 <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
                   Last Name
