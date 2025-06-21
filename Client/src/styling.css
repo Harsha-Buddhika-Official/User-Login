@@ -1,0 +1,8 @@
+.navi{
+    cursor: pointer;
+    
+}
+
+.navi:hover{
+    content: '';
+}
