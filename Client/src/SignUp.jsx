@@ -135,7 +135,7 @@ export default function SignUp() {
           {/* Form */}
           <form onSubmit={(e) => {  e.preventDefault();
                                     handleSubmit(); 
-                                    axios.post('' , {
+                                    axios.post('http://localhost:27017/register' , {
                                       firstName: formData.firstName,
                                       lastName: formData.lastName,
                                       email: formData.email,
@@ -143,6 +143,8 @@ export default function SignUp() {
                                       dateOfBirth: formData.dateOfBirth,
                                       password: formData.password
                                     })
+                                    .then(results => console.log(results))
+                                    .catch(error => console.error(error))
                                     }}>
             <div className="space-y-5">
               {/* Name Fields */}
