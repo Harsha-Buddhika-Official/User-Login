@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, User, Phone, Calendar } from 'lucide-react';
-import {useNavigate} from 'react-router-dom';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { User, Mail, Phone, Calendar, Lock } from 'lucide-react';
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -13,110 +12,13 @@ export default function SignUp() {
     password: '',
     confirmPassword: ''
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
+    setFormData((p) => ({
+      ...p,
       [name]: value
     }));
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-    }
-    
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
-    }
-    
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-    
-    if (!formData.phone) {
-      newErrors.phone = 'Phone number is required';
-    } else if (!/^\+?[\d\s-()]+$/.test(formData.phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
-    }
-    
-    if (!formData.dateOfBirth) {
-      newErrors.dateOfBirth = 'Date of birth is required';
-    } else {
-      const today = new Date();
-      const birthDate = new Date(formData.dateOfBirth);
-      const age = today.getFullYear() - birthDate.getFullYear();
-      if (age < 13) {
-        newErrors.dateOfBirth = 'You must be at least 13 years old';
-      }
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Password must contain uppercase, lowercase, and number';
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    if (!acceptedTerms) {
-      newErrors.terms = 'You must accept the terms and conditions';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-
-    // Simulate API call
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      alert(`Registration successful!\nWelcome, ${formData.firstName} ${formData.lastName}!`);
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        dateOfBirth: '',
-        password: '',
-        confirmPassword: ''
-      });
-      setAcceptedTerms(false);
-    } catch (error) {
-      alert('Registration failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -133,19 +35,7 @@ export default function SignUp() {
           </div>
 
           {/* Form */}
-          <form onSubmit={(e) => {  e.preventDefault();
-                                    handleSubmit(); 
-                                    axios.post('http://localhost:27017/register' , {
-                                      firstName: formData.firstName,
-                                      lastName: formData.lastName,
-                                      email: formData.email,
-                                      phone: formData.phone,
-                                      dateOfBirth: formData.dateOfBirth,
-                                      password: formData.password
-                                    })
-                                    .then(results => console.log(results))
-                                    .catch(error => console.error(error))
-                                    }}>
+          <form>
             <div className="space-y-5">
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
@@ -157,16 +47,10 @@ export default function SignUp() {
                     id="firstName"
                     name="firstName"
                     type="text"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors ${
-                      errors.firstName ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="First name"
+                    onChange={handleInputChange}
                   />
-                  {errors.firstName && (
-                    <p className="text-sm text-red-600">{errors.firstName}</p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -177,16 +61,10 @@ export default function SignUp() {
                     id="lastName"
                     name="lastName"
                     type="text"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors ${
-                      errors.lastName ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Last name"
+                    onChange={handleInputChange}
                   />
-                  {errors.lastName && (
-                    <p className="text-sm text-red-600">{errors.lastName}</p>
-                  )}
                 </div>
               </div>
 
@@ -203,17 +81,11 @@ export default function SignUp() {
                     id="email"
                     name="email"
                     type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors ${
-                      errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Enter your email"
+                    onChange={handleInputChange}
                   />
                 </div>
-                {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email}</p>
-                )}
               </div>
 
               {/* Phone Field */}
@@ -229,17 +101,11 @@ export default function SignUp() {
                     id="phone"
                     name="phone"
                     type="tel"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors ${
-                      errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Enter your phone number"
+                    onChange={handleInputChange}
                   />
                 </div>
-                {errors.phone && (
-                  <p className="text-sm text-red-600">{errors.phone}</p>
-                )}
               </div>
 
               {/* Date of Birth Field */}
@@ -255,16 +121,10 @@ export default function SignUp() {
                     id="dateOfBirth"
                     name="dateOfBirth"
                     type="date"
-                    value={formData.dateOfBirth}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     onChange={handleInputChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors ${
-                      errors.dateOfBirth ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
                   />
                 </div>
-                {errors.dateOfBirth && (
-                  <p className="text-sm text-red-600">{errors.dateOfBirth}</p>
-                )}
               </div>
 
               {/* Password Field */}
@@ -279,29 +139,12 @@ export default function SignUp() {
                   <input
                     id="password"
                     name="password"
-                    type={showPassword ? 'text' : 'password'}
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors ${
-                      errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
+                    type="password"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Create a password"
+                    onChange={handleInputChange}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                    )}
-                  </button>
                 </div>
-                {errors.password && (
-                  <p className="text-sm text-red-600">{errors.password}</p>
-                )}
               </div>
 
               {/* Confirm Password Field */}
@@ -316,29 +159,12 @@ export default function SignUp() {
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors ${
-                      errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                    }`}
+                    type="password"
+                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Confirm your password"
+                    onChange={handleInputChange}
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                    )}
-                  </button>
                 </div>
-                {errors.confirmPassword && (
-                  <p className="text-sm text-red-600">{errors.confirmPassword}</p>
-                )}
               </div>
 
               {/* Terms and Conditions */}
@@ -348,49 +174,22 @@ export default function SignUp() {
                     id="terms"
                     name="terms"
                     type="checkbox"
-                    checked={acceptedTerms}
-                    onChange={(e) => {
-                      setAcceptedTerms(e.target.checked);
-                      if (errors.terms) {
-                        setErrors(prev => ({
-                          ...prev,
-                          terms: ''
-                        }));
-                      }
-                    }}
                     className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded mt-1"
                   />
                   <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
-                    I agree to the{' '}
-                    <button type="button" className="text-purple-600 hover:text-purple-500 font-medium">
-                      Terms of Service
-                    </button>{' '}
-                    and{' '}
-                    <button type="button" className="text-purple-600 hover:text-purple-500 font-medium">
-                      Privacy Policy
-                    </button>
+                    I agree to the
+                    <button type="button" className="text-purple-600 hover:text-purple-500 font-medium">Terms of Service</button>
+                    and
+                    <button type="button" className="text-purple-600 hover:text-purple-500 font-medium">Privacy Policy</button>
                   </label>
                 </div>
-                {errors.terms && (
-                  <p className="text-sm text-red-600">{errors.terms}</p>
-                )}
               </div>
 
-              {/* Submit Button */}
               <button
                 type="button"
-                onClick={handleSubmit}
-                disabled={isLoading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
               >
-                {isLoading ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Creating Account...
-                  </div>
-                ) : (
-                  'Create Account'
-                )}
+                Create Account
               </button>
             </div>
           </form>
@@ -398,12 +197,8 @@ export default function SignUp() {
           {/* Footer */}
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <button
-              onClick={() => navigate('/login')}
-              className="font-medium text-purple-600 hover:text-purple-500">
-                Sign in
-              </button>
+              Already have an account?
+              <button className="font-medium text-purple-600 hover:text-purple-500">Sign in</button>
             </p>
           </div>
         </div>
