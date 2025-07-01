@@ -13,6 +13,9 @@ export default function SignUp() {
     confirmPassword: ''
   });
 
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((p) => ({
@@ -20,6 +23,8 @@ export default function SignUp() {
       [name]: value
     }));
   };
+
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex items-center justify-center p-4">
@@ -51,6 +56,9 @@ export default function SignUp() {
                     placeholder="First name"
                     onChange={handleInputChange}
                   />
+                  {errors.firstName && (
+                    <p className="text-sm text-red-600">{errors.firstName}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -65,6 +73,9 @@ export default function SignUp() {
                     placeholder="Last name"
                     onChange={handleInputChange}
                   />
+                  {errors.lastName && (
+                    <p className="text-sm text-red-600">{errors.lastName}</p>
+                  )}
                 </div>
               </div>
 
