@@ -22,6 +22,13 @@ export default function SignUp() {
       ...p,
       [name]: value
     }));
+
+    if(errors[name]){
+      setErrors(p => ({
+        ...p,
+        [name]: ''
+      }))
+    }
   };
 
 
