@@ -54,6 +54,7 @@ export default function SignUp() {
                     type="text"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="First name"
+                    value={formData.firstName}
                     onChange={handleInputChange}
                   />
                   {errors.firstName && (
@@ -71,6 +72,7 @@ export default function SignUp() {
                     type="text"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Last name"
+                    value={formData.lastName}
                     onChange={handleInputChange}
                   />
                   {errors.lastName && (
@@ -94,6 +96,7 @@ export default function SignUp() {
                     type="email"
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Enter your email"
+                    value={formData.email}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -114,6 +117,7 @@ export default function SignUp() {
                     type="tel"
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Enter your phone number"
+                    value={formData.phone}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -133,6 +137,7 @@ export default function SignUp() {
                     name="dateOfBirth"
                     type="date"
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                    value={formData.dateOfBirth}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -153,6 +158,7 @@ export default function SignUp() {
                     type="password"
                     className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Create a password"
+                    value={formData.password}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -173,6 +179,7 @@ export default function SignUp() {
                     type="password"
                     className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Confirm your password"
+                    value={formData.confirmPassword}
                     onChange={handleInputChange}
                   />
                 </div>
