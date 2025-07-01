@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Mail, Phone, Calendar, Lock } from 'lucide-react';
+import { User, Mail, Phone, Calendar, Lock, Eye, EyeOff } from 'lucide-react';
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
@@ -14,9 +14,9 @@ export default function SignUp() {
   });
 
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  const [showPassword, SetShowPassword] = useState(false);
-  const [showConfirmPassword, SetShowConfirmPassword] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -32,8 +32,6 @@ export default function SignUp() {
       }))
     }
   };
-
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex items-center justify-center p-4">
@@ -65,6 +63,7 @@ export default function SignUp() {
                     placeholder="First name"
                     value={formData.firstName}
                     onChange={handleInputChange}
+                    required
                   />
                   {errors.firstName && (
                     <p className="text-sm text-red-600">{errors.firstName}</p>
@@ -83,6 +82,7 @@ export default function SignUp() {
                     placeholder="Last name"
                     value={formData.lastName}
                     onChange={handleInputChange}
+                    required
                   />
                   {errors.lastName && (
                     <p className="text-sm text-red-600">{errors.lastName}</p>
@@ -107,6 +107,7 @@ export default function SignUp() {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -128,6 +129,7 @@ export default function SignUp() {
                     placeholder="Enter your phone number"
                     value={formData.phone}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -148,6 +150,7 @@ export default function SignUp() {
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     value={formData.dateOfBirth}
                     onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -164,15 +167,16 @@ export default function SignUp() {
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Create a password"
                     value={formData.password}
                     onChange={handleInputChange}
+                    required
                   />
                   <button
                     type="button"
-                    onClick={() => SetShowPassword(!showPassword)}
+                    onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   > 
                   { showPassword ? (
@@ -196,15 +200,16 @@ export default function SignUp() {
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
+                    required
                   />
                   <button
                     type="button"
-                    onClick={() => SetShowConfirmPassword(!showConfirmPassword)}
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   > 
                   { showConfirmPassword ? (
