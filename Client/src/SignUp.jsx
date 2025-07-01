@@ -176,9 +176,9 @@ export default function SignUp() {
                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   > 
                   { showPassword ? (
-                    <EyeOff />
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
                   ) : (
-                    <Eye />
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
                   )}
                   </button>
                 </div>
@@ -202,6 +202,17 @@ export default function SignUp() {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                   />
+                  <button
+                    type="button"
+                    onClick={() => SetShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  > 
+                  { showConfirmPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
+                  )}
+                  </button>
                 </div>
               </div>
 
