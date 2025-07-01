@@ -15,6 +15,8 @@ export default function SignUp() {
 
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const [showPassword, SetShowPassword] = useState(false);
+  const [showConfirmPassword, SetShowConfirmPassword] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -168,6 +170,17 @@ export default function SignUp() {
                     value={formData.password}
                     onChange={handleInputChange}
                   />
+                  <button
+                    type="button"
+                    onClick={() => SetShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  > {
+                    showPassword ?
+                    <EyeOff />
+                    :
+                    <Eye />
+                  }
+                  </button>
                 </div>
               </div>
 
