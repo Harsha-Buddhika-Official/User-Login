@@ -33,10 +33,6 @@ export default function SignUp() {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  }
-
   const validateForm = () => {
     const newErrors = {};
     
@@ -60,13 +56,13 @@ export default function SignUp() {
       newErrors.dateOfBirth = 'Date of birth is required';
     } else {
       const today = new Date();
-      const birthDate = new Date(form.birthDate);
+      const birthDate = new Date(formData.dateOfBirth);
       if (today.getFullYear() - birthDate.getFullYear() < 18) {
         newErrors.dateOfBirth = 'You must be at least 18 years old';
       }
     }
 
-    if(!FormData.password.trim()){
+    if(!formData.password.trim()){
       newErrors.password = 'Password is required';
     } else if (formData.password.length <8){
       newErrors.password = 'Password must be at least 8 characters long';
@@ -75,9 +71,15 @@ export default function SignUp() {
         newErrors.confirmPassword = 'Passwords do not match';
       }
     }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   }
 
-  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if(!validateForm()) return;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex items-center justify-center p-4">
@@ -109,7 +111,6 @@ export default function SignUp() {
                     placeholder="First name"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    required
                   />
                   {errors.firstName && (
                     <p className="text-sm text-red-600">{errors.firstName}</p>
@@ -128,7 +129,6 @@ export default function SignUp() {
                     placeholder="Last name"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    required
                   />
                   {errors.lastName && (
                     <p className="text-sm text-red-600">{errors.lastName}</p>
@@ -153,7 +153,6 @@ export default function SignUp() {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
               </div>
@@ -175,7 +174,6 @@ export default function SignUp() {
                     placeholder="Enter your phone number"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
               </div>
@@ -196,7 +194,6 @@ export default function SignUp() {
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
                     value={formData.dateOfBirth}
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
               </div>
@@ -218,7 +215,6 @@ export default function SignUp() {
                     placeholder="Create a password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    required
                   />
                   <button
                     type="button"
@@ -251,7 +247,6 @@ export default function SignUp() {
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    required
                   />
                   <button
                     type="button"
