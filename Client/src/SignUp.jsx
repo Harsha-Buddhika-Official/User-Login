@@ -64,12 +64,15 @@ export default function SignUp() {
 
     if(!formData.password.trim()){
       newErrors.password = 'Password is required';
-    } else if (formData.password.length <8){
+    } else if (formData.password.length < 8){
       newErrors.password = 'Password must be at least 8 characters long';
-    } else {
-      if(formData.password !== formData.confirmPassword){
-        newErrors.confirmPassword = 'Passwords do not match';
-      }
+    }
+
+    // Separate validation for confirm password
+    if(!formData.confirmPassword.trim()){
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if(formData.password !== formData.confirmPassword){
+      newErrors.confirmPassword = 'Passwords do not match';
     }
 
     setErrors(newErrors);
@@ -107,7 +110,8 @@ export default function SignUp() {
                     id="firstName"
                     name="firstName"
                     type="text"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
+                      ${ errors.firstName ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="First name"
                     value={formData.firstName}
                     onChange={handleInputChange}
@@ -125,7 +129,8 @@ export default function SignUp() {
                     id="lastName"
                     name="lastName"
                     type="text"
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
+                      ${errors.lastName ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="Last name"
                     value={formData.lastName}
                     onChange={handleInputChange}
@@ -149,12 +154,16 @@ export default function SignUp() {
                     id="email"
                     name="email"
                     type="email"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
+                      ${errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleInputChange}
                   />
                 </div>
+                {errors.email && (
+                  <p className="text-sm text-red-600">{errors.email}</p>
+                )}
               </div>
 
               {/* Phone Field */}
@@ -170,12 +179,16 @@ export default function SignUp() {
                     id="phone"
                     name="phone"
                     type="tel"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
+                      ${errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="Enter your phone number"
                     value={formData.phone}
                     onChange={handleInputChange}
                   />
                 </div>
+                {errors.phone && (
+                  <p className="text-sm text-red-600">{errors.phone}</p>
+                )}
               </div>
 
               {/* Date of Birth Field */}
@@ -191,11 +204,15 @@ export default function SignUp() {
                     id="dateOfBirth"
                     name="dateOfBirth"
                     type="date"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
+                      ${errors.dateOfBirth ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     value={formData.dateOfBirth}
                     onChange={handleInputChange}
                   />
                 </div>
+                {errors.dateOfBirth && (
+                  <p className="text-sm text-red-600">{errors.dateOfBirth}</p>
+                )}
               </div>
 
               {/* Password Field */}
@@ -211,7 +228,8 @@ export default function SignUp() {
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
+                      ${errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="Create a password"
                     value={formData.password}
                     onChange={handleInputChange}
@@ -228,6 +246,9 @@ export default function SignUp() {
                   )}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="text-sm text-red-600">{errors.password}</p>
+                )}
               </div>
 
               {/* Confirm Password Field */}
@@ -243,7 +264,8 @@ export default function SignUp() {
                     id="confirmPassword"
                     name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
-                    className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                    className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
+                      ${errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="Confirm your password"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
@@ -260,6 +282,9 @@ export default function SignUp() {
                   )}
                   </button>
                 </div>
+                {errors.confirmPassword && (
+                  <p className="text-sm text-red-600">{errors.confirmPassword}</p>
+                )}
               </div>
 
               {/* Terms and Conditions */}
@@ -281,7 +306,7 @@ export default function SignUp() {
               </div>
 
               <button
-                type="button"
+                type="submit"
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
               >
                 Create Account
