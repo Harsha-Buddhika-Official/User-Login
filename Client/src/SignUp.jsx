@@ -33,6 +33,21 @@ export default function SignUp() {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  }
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    }
+
+    if( !formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
+    }  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex items-center justify-center p-4">
       <div className="w-full max-w-lg">
@@ -47,7 +62,7 @@ export default function SignUp() {
           </div>
 
           {/* Form */}
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="space-y-5">
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
