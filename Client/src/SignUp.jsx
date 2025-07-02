@@ -1,97 +1,60 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import { User, Mail, Phone, Calendar, Lock, Eye, EyeOff } from 'lucide-react';
 
 export default function SignUp() {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    dateOfBirth: '',
-    password: '',
-    confirmPassword: ''
-  });
-
-  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((p) => ({
-      ...p,
-      [name]: value
-    }));
-
-    if(errors[name]){
-      setErrors(p => ({
-        ...p,
-        [name]: ''
-      }))
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting }
+  } = useForm({
+    mode: 'onBlur',
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      dateOfBirth: '',
+      password: '',
+      confirmPassword: '',
+      terms: false
     }
+  });
+
+  const password = watch('password');
+
+  const validateAge = (value) => {
+    if (!value) return 'Date of birth is required';
+    const today = new Date();
+    const birthDate = new Date(value);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age >= 18 || 'You must be at least 18 years old';
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-    }
-
-    if( !formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
-    }
-  
-    if(!formData.email.trim()){
-      newErrors.email = 'Email is required';
-    }
-
-    if(!formData.phone.trim()){
-      newErrors.phone = 'Phone number is required';
-    }
-
-    if(!formData.dateOfBirth.trim()){
-      newErrors.dateOfBirth = 'Date of birth is required';
-    } else {
-      const today = new Date();
-      const birthDate = new Date(formData.dateOfBirth);
-      if (today.getFullYear() - birthDate.getFullYear() < 18) {
-        newErrors.dateOfBirth = 'You must be at least 18 years old';
-      }
-    }
-
-    if(!formData.password.trim()){
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8){
-      newErrors.password = 'Password must be at least 8 characters long';
-    }
-
-    if(!formData.confirmPassword.trim()){
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if(formData.password !== formData.confirmPassword){
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if(!validateForm()) return;
-    try{
-      const response = await registerUser(formData);
-      if(response.data){
+  const onSubmit = async (data) => {
+    try {
+      const response = await registerUser(data);
+      if (response.data) {
         alert('Account created successfully!');
         navigate('/login');
       }
-    } catch(error){
+    } catch (error) {
       alert('Error creating account. Please try again.');
       console.error('Error creating account:', error);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex items-center justify-center p-4">
@@ -107,7 +70,7 @@ export default function SignUp() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-5">
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
@@ -117,16 +80,20 @@ export default function SignUp() {
                   </label>
                   <input
                     id="firstName"
-                    name="firstName"
                     type="text"
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
-                      ${ errors.firstName ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+                      ${errors.firstName ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="First name"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
+                    {...register('firstName', {
+                      required: 'First name is required',
+                      minLength: {
+                        value: 2,
+                        message: 'First name must be at least 2 characters'
+                      }
+                    })}
                   />
                   {errors.firstName && (
-                    <p className="text-sm text-red-600">{errors.firstName}</p>
+                    <p className="text-sm text-red-600">{errors.firstName.message}</p>
                   )}
                 </div>
 
@@ -136,16 +103,20 @@ export default function SignUp() {
                   </label>
                   <input
                     id="lastName"
-                    name="lastName"
                     type="text"
                     className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
                       ${errors.lastName ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="Last name"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
+                    {...register('lastName', {
+                      required: 'Last name is required',
+                      minLength: {
+                        value: 2,
+                        message: 'Last name must be at least 2 characters'
+                      }
+                    })}
                   />
                   {errors.lastName && (
-                    <p className="text-sm text-red-600">{errors.lastName}</p>
+                    <p className="text-sm text-red-600">{errors.lastName.message}</p>
                   )}
                 </div>
               </div>
@@ -161,17 +132,21 @@ export default function SignUp() {
                   </div>
                   <input
                     id="email"
-                    name="email"
                     type="email"
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
                       ${errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="Enter your email"
-                    value={formData.email}
-                    onChange={handleInputChange}
+                    {...register('email', {
+                      required: 'Email is required',
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'Invalid email address'
+                      }
+                    })}
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-sm text-red-600">{errors.email}</p>
+                  <p className="text-sm text-red-600">{errors.email.message}</p>
                 )}
               </div>
 
@@ -186,17 +161,21 @@ export default function SignUp() {
                   </div>
                   <input
                     id="phone"
-                    name="phone"
                     type="tel"
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
                       ${errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="Enter your phone number"
-                    value={formData.phone}
-                    onChange={handleInputChange}
+                    {...register('phone', {
+                      required: 'Phone number is required',
+                      pattern: {
+                        value: /^[\+]?[1-9][\d]{0,15}$/,
+                        message: 'Invalid phone number'
+                      }
+                    })}
                   />
                 </div>
                 {errors.phone && (
-                  <p className="text-sm text-red-600">{errors.phone}</p>
+                  <p className="text-sm text-red-600">{errors.phone.message}</p>
                 )}
               </div>
 
@@ -211,16 +190,16 @@ export default function SignUp() {
                   </div>
                   <input
                     id="dateOfBirth"
-                    name="dateOfBirth"
                     type="date"
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
                       ${errors.dateOfBirth ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
-                    value={formData.dateOfBirth}
-                    onChange={handleInputChange}
+                    {...register('dateOfBirth', {
+                      validate: validateAge
+                    })}
                   />
                 </div>
                 {errors.dateOfBirth && (
-                  <p className="text-sm text-red-600">{errors.dateOfBirth}</p>
+                  <p className="text-sm text-red-600">{errors.dateOfBirth.message}</p>
                 )}
               </div>
 
@@ -235,28 +214,36 @@ export default function SignUp() {
                   </div>
                   <input
                     id="password"
-                    name="password"
                     type={showPassword ? "text" : "password"}
                     className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
                       ${errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="Create a password"
-                    value={formData.password}
-                    onChange={handleInputChange}
+                    {...register('password', {
+                      required: 'Password is required',
+                      minLength: {
+                        value: 8,
+                        message: 'Password must be at least 8 characters long'
+                      },
+                      pattern: {
+                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+                        message: 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+                      }
+                    })}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   > 
-                  { showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
-                  )}
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
+                    ) : (
+                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
+                    )}
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-red-600">{errors.password}</p>
+                  <p className="text-sm text-red-600">{errors.password.message}</p>
                 )}
               </div>
 
@@ -271,28 +258,29 @@ export default function SignUp() {
                   </div>
                   <input
                     id="confirmPassword"
-                    name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
                     className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
                       ${errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
                     placeholder="Confirm your password"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
+                    {...register('confirmPassword', {
+                      required: 'Please confirm your password',
+                      validate: (value) => value === password || 'Passwords do not match'
+                    })}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   > 
-                  { showConfirmPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
-                  )}
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
+                    ) : (
+                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600"/>
+                    )}
                   </button>
                 </div>
                 {errors.confirmPassword && (
-                  <p className="text-sm text-red-600">{errors.confirmPassword}</p>
+                  <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>
                 )}
               </div>
 
@@ -301,24 +289,30 @@ export default function SignUp() {
                 <div className="flex items-start">
                   <input
                     id="terms"
-                    name="terms"
                     type="checkbox"
                     className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded mt-1"
+                    {...register('terms', {
+                      required: 'You must accept the terms and conditions'
+                    })}
                   />
                   <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
                     I agree to the
-                    <button type="button" className="text-purple-600 hover:text-purple-500 font-medium">Terms of Service</button>
-                    and
+                    <button type="button" className="text-purple-600 hover:text-purple-500 font-medium"> Terms of Service</button>
+                    {' '}and{' '}
                     <button type="button" className="text-purple-600 hover:text-purple-500 font-medium">Privacy Policy</button>
                   </label>
                 </div>
+                {errors.terms && (
+                  <p className="text-sm text-red-600">{errors.terms.message}</p>
+                )}
               </div>
 
               <button
                 type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors"
+                disabled={isSubmitting}
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create Account
+                {isSubmitting ? 'Creating Account...' : 'Create Account'}
               </button>
             </div>
           </form>
@@ -327,7 +321,13 @@ export default function SignUp() {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Already have an account?
-              <button className="font-medium text-purple-600 hover:text-purple-500">Sign in</button>
+              <button 
+                type="button"
+                onClick={() => navigate('/login')}
+                className="font-medium text-purple-600 hover:text-purple-500"
+              >
+                {' '}Sign in
+              </button>
             </p>
           </div>
         </div>
