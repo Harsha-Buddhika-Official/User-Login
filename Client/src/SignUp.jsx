@@ -68,7 +68,6 @@ export default function SignUp() {
       newErrors.password = 'Password must be at least 8 characters long';
     }
 
-    // Separate validation for confirm password
     if(!formData.confirmPassword.trim()){
       newErrors.confirmPassword = 'Please confirm your password';
     } else if(formData.password !== formData.confirmPassword){
@@ -82,6 +81,16 @@ export default function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(!validateForm()) return;
+    try{
+      const response = await registerUser(formData);
+      if(response.data){
+        alert('Account created successfully!');
+        navigate('/login');
+      }
+    } catch(error){
+      alert('Error creating account. Please try again.');
+      console.error('Error creating account:', error);
+    }
   }
 
   return (
