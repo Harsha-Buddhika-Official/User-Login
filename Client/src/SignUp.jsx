@@ -46,7 +46,38 @@ export default function SignUp() {
 
     if( !formData.lastName.trim()) {
       newErrors.lastName = 'Last name is required';
-    }  
+    }
+  
+    if(!formData.email.trim()){
+      newErrors.email = 'Email is required';
+    }
+
+    if(!formData.phone.trim()){
+      newErrors.phone = 'Phone number is required';
+    }
+
+    if(!formData.dateOfBirth.trim()){
+      newErrors.dateOfBirth = 'Date of birth is required';
+    } else {
+      const today = new Date();
+      const birthDate = new Date(form.birthDate);
+      if (today.getFullYear() - birthDate.getFullYear() < 18) {
+        newErrors.dateOfBirth = 'You must be at least 18 years old';
+      }
+    }
+
+    if(!FormData.password.trim()){
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length <8){
+      newErrors.password = 'Password must be at least 8 characters long';
+    } else {
+      if(formData.password !== formData.confirmPassword){
+        newErrors.confirmPassword = 'Passwords do not match';
+      }
+    }
+  }
+
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100 flex items-center justify-center p-4">
