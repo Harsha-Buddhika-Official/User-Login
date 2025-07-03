@@ -52,12 +52,13 @@ function Login() {
     if (!validateForm()) return;
     
     setIsLoading(true);
-    
-    // Simulate API call
+  
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
       alert(`Login successful!\nEmail: ${formData.email}`);
       setFormData({ email: '', password: '' });
+      localStorage.setItem('user', JSON.stringify({ email: formData.email }));
+      navigate('/dashboard');
     } catch (error) {
       alert('Login failed. Please try again.');
     } finally {
