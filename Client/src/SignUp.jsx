@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { User, Mail, Phone, Calendar, Lock, Eye, EyeOff } from 'lucide-react';
+import { registerUser } from './services/authService';
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -34,12 +35,6 @@ export default function SignUp() {
     const today = new Date();
     const birthDate = new Date(value);
     const age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    
     return age >= 18 || 'You must be at least 18 years old';
   };
 
@@ -164,7 +159,7 @@ export default function SignUp() {
                     type="tel"
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors
                       ${errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
-                    placeholder="Enter your phone number"
+                    placeholder="Enter your phone number (Ex - +94701234567)"
                     {...register('phone', {
                       required: 'Phone number is required',
                       pattern: {

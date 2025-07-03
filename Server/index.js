@@ -2,7 +2,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
 const EmployeeModel = require("./models/employee")
-
+const port = 5001;
 
 const app = express();
 app.use(express.json())
@@ -20,6 +20,25 @@ app.post('/register', (req, res) => {
         });
 });
 
-app.listen(3000, () => {
-    console.log("Server is running on port 3000");
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    EmployeeModel.find({ email, password })
+    .then(user => {
+      if (user) {
+        if (user.password === password) {
+          res.status(200).json({ success: true, message: "Successfully Logged In" });
+        } else {
+          res.status(401).json({ success: false, message: "Password is incorrect" });
+        }
+      } else {
+        res.status(404).json({ success: false, message: "User does not exist" });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ success: false, message: "Server error", error: err });
+    });
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 })
