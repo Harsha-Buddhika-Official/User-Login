@@ -1,66 +1,58 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
+import { useForm } from 'react-hook-form';
+import axios from 'axios';
 
 function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
   const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    clearErrors
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleInputChange = (fieldName) => {
     // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+    if (errors[fieldName]) {
+      clearErrors(fieldName);
     }
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateForm()) return;
-    
+  const onSubmit = async (data) => {
     setIsLoading(true);
   
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      alert(`Login successful!\nEmail: ${formData.email}`);
-      setFormData({ email: '', password: '' });
-      localStorage.setItem('user', JSON.stringify({ email: formData.email }));
-      navigate('/dashboard');
+      const response = await axios.post('http://localhost:5001/login', {
+        email: data.email,
+        password: data.password
+      });
+      
+      if (response.data.success) {
+        alert(`Login successful!\nWelcome ${response.data.user.firstName}!`);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        reset();
+        navigate('/dashboard');
+      }
     } catch (error) {
-      alert('Login failed. Please try again.');
+      if (error.response) {
+        // Server responded with error status
+        alert(error.response.data.message || 'Login failed. Please try again.');
+      } else {
+        // Network error or other issues
+        alert('Login failed. Please check your connection and try again.');
+      }
+      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +72,7 @@ function Login() {
           </div>
 
           {/* Form */}
-          <div className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {/* Email Field */}
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -92,10 +84,15 @@ function Login() {
                 </div>
                 <input
                   id="email"
-                  name="email"
                   type="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /\S+@\S+\.\S+/,
+                      message: 'Please enter a valid email'
+                    }
+                  })}
+                  onChange={() => handleInputChange('email')}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${
                     errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
@@ -103,7 +100,7 @@ function Login() {
                 />
               </div>
               {errors.email && (
-                <p className="text-sm text-red-600">{errors.email}</p>
+                <p className="text-sm text-red-600">{errors.email.message}</p>
               )}
             </div>
 
@@ -118,10 +115,15 @@ function Login() {
                 </div>
                 <input
                   id="password"
-                  name="password"
                   type={showPassword ? 'text' : 'password'}
-                  value={formData.password}
-                  onChange={handleInputChange}
+                  {...register('password', {
+                    required: 'Password is required',
+                    minLength: {
+                      value: 6,
+                      message: 'Password must be at least 6 characters'
+                    }
+                  })}
+                  onChange={() => handleInputChange('password')}
                   className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${
                     errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
@@ -140,7 +142,7 @@ function Login() {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-sm text-red-600">{errors.password}</p>
+                <p className="text-sm text-red-600">{errors.password.message}</p>
               )}
             </div>
 
@@ -149,8 +151,8 @@ function Login() {
               <div className="flex items-center">
                 <input
                   id="remember-me"
-                  name="remember-me"
                   type="checkbox"
+                  {...register('rememberMe')}
                   className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
@@ -167,10 +169,9 @@ function Login() {
 
             {/* Submit Button */}
             <button
-              type="button"
-              onClick={handleSubmit}
+              type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors  cursor-pointer"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
             >
               {isLoading ? (
                 <div className="flex items-center">
@@ -181,15 +182,16 @@ function Login() {
                 'Sign In'
               )}
             </button>
-          </div>
+          </form>
 
           {/* Footer */}
           <div className="text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
               <button
-              onClick={() => navigate('/signup')}
-              className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
+                onClick={() => navigate('/signup')}
+                className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
+              >
                 Sign up
               </button>
             </p>
@@ -199,4 +201,5 @@ function Login() {
     </div>
   );
 }
+
 export default Login;
