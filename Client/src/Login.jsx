@@ -31,7 +31,7 @@ function Login() {
       
       if (response.data.success) {
         alert('Login successful!');
-        navigate('/home');
+        navigate('/dashboard');
       } else {
         setError('root', { message: response.data.message || 'Login failed.' });
       }
