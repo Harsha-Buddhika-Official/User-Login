@@ -12,8 +12,9 @@ User-Login/
 │   │   ├── Home.jsx          # Home page component
 │   │   ├── Login.jsx         # Login form component
 │   │   ├── SignUp.jsx        # Registration form component
+│   │   ├── Dashboard.jsx     # Protected dashboard component
 │   │   └── services/
-│   │       └── api.jsx       # API service layer with axios
+│   │       └── authService.jsx # Authentication service layer with axios
 │   └── package.json
 └── Server/          # Node.js backend API
     ├── index.js              # Express server setup
@@ -24,12 +25,15 @@ User-Login/
 
 ## Features
 
-- **User Registration**: Complete signup form with validation
-- **User Authentication**: Login system with form validation
+- **User Registration**: Complete signup form with validation using react-hook-form
+- **User Authentication**: Login system with form validation and error handling
+- **Protected Routes**: Dashboard accessible only after login
 - **Responsive Design**: Built with Tailwind CSS and Lucide React icons
-- **API Integration**: Axios-based API calls to backend
+- **API Integration**: Axios-based API calls to backend via authService
 - **MongoDB Integration**: User data persistence with Mongoose
 - **Client-side Routing**: React Router for navigation
+- **Form Validation**: Comprehensive validation with react-hook-form
+- **Local Storage**: User session management
 
 ## Tech Stack
 
@@ -40,6 +44,7 @@ User-Login/
 - **Tailwind CSS** - Styling framework
 - **Axios** - HTTP client for API calls
 - **Lucide React** - Icon library
+- **React Hook Form** - Form validation and management
 
 ### Backend (Server)
 - **Node.js** - Runtime environment
@@ -47,6 +52,8 @@ User-Login/
 - **MongoDB** - Database
 - **Mongoose** - MongoDB object modeling
 - **CORS** - Cross-origin resource sharing
+- **bcrypt/bcryptjs** - Password hashing (installed but not implemented)
+- **jsonwebtoken** - JWT token handling (installed but not implemented)
 
 ## Getting Started
 
@@ -83,20 +90,24 @@ User-Login/
    cd Server
    npm start
    ```
-   Server will run on `http://localhost:3000`
+   Server will run on `http://localhost:5001`
 
 3. **Start the frontend development server**
    ```bash
    cd Client
    npm run dev
    ```
-   Client will run on `http://localhost:3000` (Vite config)
+   Client will run on `http://localhost:5000`
 
 ## API Endpoints
 
 ### Authentication
 - `POST /register` - Register a new user
   - Body: `{ firstName, lastName, email, phone, dateOfBirth, password }`
+  - Response: Created user object
+- `POST /login` - Authenticate user
+  - Body: `{ email, password }`
+  - Response: `{ success: boolean, message: string }`
 
 ## Available Scripts
 
@@ -126,9 +137,35 @@ User-Login/
 
 ## Routes
 
-- `/` - Home page
-- `/signup` - User registration
-- `/login` - User login
+- `/` - Home page with login/signup buttons
+- `/signup` - User registration form
+- `/login` - User login form
+- `/dashboard` - Protected dashboard (requires authentication)
+
+## Form Validation
+
+### Sign Up Form
+- First Name: Required, minimum 2 characters
+- Last Name: Required, minimum 2 characters
+- Email: Required, valid email format
+- Phone: Required, valid phone number format
+- Date of Birth: Required, user must be 18+ years old
+- Password: Required, minimum 8 characters, must contain uppercase, lowercase, and number
+- Confirm Password: Must match password
+- Terms & Conditions: Must be accepted
+
+### Login Form
+- Email: Required, valid email format
+- Password: Required, minimum 6 characters
+- Remember Me: Optional checkbox
+
+## Security Features
+
+- Client-side form validation
+- Password visibility toggle
+- Age validation (18+ required)
+- Email format validation
+- Password strength requirements
 
 ## Contributing
 
@@ -138,17 +175,29 @@ User-Login/
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## Known Issues
+## Current Status
 
-- [ ] Login functionality not yet connected to backend
-- [ ] Password confirmation validation needs implementation in SignUp
-- [ ] Form submission in SignUp component needs completion
+### Completed Features
+- ✅ User registration with full form validation
+- ✅ User login with authentication
+- ✅ Protected dashboard route
+- ✅ Local storage session management
+- ✅ Responsive UI design
+- ✅ API integration between frontend and backend
+
+### Known Issues
+- ⚠️ Passwords are stored in plain text (no encryption)
+- ⚠️ No JWT token implementation
+- ⚠️ Case sensitivity issue in model import (`Employee.js` vs `employee`)
 
 ## Future Enhancements
 
 - [ ] JWT token-based authentication
-- [ ] Password encryption/hashing
+- [ ] Password encryption/hashing implementation
 - [ ] Email verification
 - [ ] Password reset functionality
 - [ ] User profile management
-- [ ] Session management
+- [ ] Session timeout handling
+- [ ] Input sanitization
+- [ ] Rate limiting for API endpoints
+- [ ] User role management
