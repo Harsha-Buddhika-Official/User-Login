@@ -6,7 +6,6 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Check if user is logged in
     const userData = localStorage.getItem('user');
     if (!userData) {
       navigate('/login');
