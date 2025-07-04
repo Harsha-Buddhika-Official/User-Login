@@ -13,8 +13,7 @@ function Login() {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-    clearErrors
+    setError
   } = useForm({
     defaultValues: {
       email: '',
@@ -22,16 +21,8 @@ function Login() {
     }
   });
 
-  const handleInputChange = (fieldName) => {
-    // Clear error when user starts typing
-    if (errors[fieldName]) {
-      clearErrors(fieldName);
-    }
-  };
-
   const onSubmit = async (data) => {
     setIsLoading(true);
-  
     try {
       const response = await axios.post('http://localhost:5001/login', {
         email: data.email,
@@ -39,20 +30,17 @@ function Login() {
       });
       
       if (response.data.success) {
-        alert(`Login successful!\nWelcome ${response.data.user.firstName}!`);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        reset();
-        navigate('/dashboard');
+        alert('Login successful!');
+        navigate('/home');
+      } else {
+        setError('root', { message: response.data.message || 'Login failed.' });
       }
     } catch (error) {
-      if (error.response) {
-        // Server responded with error status
-        alert(error.response.data.message || 'Login failed. Please try again.');
+      if (error.response && error.response.data && error.response.data.message) {
+        setError('root', { message: error.response.data.message });
       } else {
-        // Network error or other issues
-        alert('Login failed. Please check your connection and try again.');
+        setError('root', { message: 'An error occurred. Please try again.' });
       }
-      console.error('Login error:', error);
     } finally {
       setIsLoading(false);
     }
@@ -92,7 +80,6 @@ function Login() {
                       message: 'Please enter a valid email'
                     }
                   })}
-                  onChange={() => handleInputChange('email')}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${
                     errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
@@ -123,7 +110,6 @@ function Login() {
                       message: 'Password must be at least 6 characters'
                     }
                   })}
-                  onChange={() => handleInputChange('password')}
                   className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors ${
                     errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
@@ -166,6 +152,11 @@ function Login() {
                 Forgot password?
               </button>
             </div>
+
+            {/* General Error Message */}
+            {errors.root && (
+              <p className="text-sm text-red-600 text-center">{errors.root.message}</p>
+            )}
 
             {/* Submit Button */}
             <button
