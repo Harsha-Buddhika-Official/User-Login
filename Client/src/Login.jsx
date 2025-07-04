@@ -3,6 +3,7 @@ import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { LoginUser } from './services/authService';
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,10 +25,7 @@ function Login() {
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:5001/login', {
-        email: data.email,
-        password: data.password
-      });
+      const response = await LoginUser(data);
       
       if (response.data.success) {
         alert('Login successful!');
