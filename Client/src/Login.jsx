@@ -28,8 +28,13 @@ function Login() {
       const response = await LoginUser(data);
       
       if (response.data.success) {
+        const userData = { 
+          email: data.email,
+          ...response.data.user 
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
         alert('Login successful!');
-        navigate('/dashboard');
+        navigate('/dashboard'); 
       } else {
         setError('root', { message: response.data.message || 'Login failed.' });
       }
