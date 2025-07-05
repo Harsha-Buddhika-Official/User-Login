@@ -41,6 +41,38 @@ app.post('/register', (req, res) => {
         });
 });
 
+app.put('/update/:id', (req, res) => {
+    const { id } = req.params;
+    const updateData = req.body;
+    
+    console.log('Updating user:', id, updateData);
+    
+    EmployeeModel.findByIdAndUpdate(id, updateData, { new: true })
+        .then(updatedUser => {
+            if (updatedUser) {
+                const { password, ...userData } = updatedUser.toObject();
+                res.status(200).json({
+                    success: true,
+                    message: "Profile updated successfully",
+                    user: userData
+                });
+            } else {
+                res.status(404).json({
+                    success: false,
+                    message: "User not found"
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error updating user:', error);
+            res.status(500).json({
+                success: false,
+                message: "Server error",
+                error: error
+            });
+        });
+});
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 })
