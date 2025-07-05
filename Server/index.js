@@ -16,7 +16,9 @@ app.post('/login' , (req,res) => {
   .then(user => {
     if(user){
       if(user.password == password){
-        res.status(200).json({success: true, message:"Successfull login"})
+        const {password, ...userData} = user.toObject();
+        res.status(200).json({success: true, message:"Successfull login", user: userData});
+        console.log("User logged in successfully:", userData);
       } else {
         res.status(401).json({success: false, message:"Password incorrect"})
       }

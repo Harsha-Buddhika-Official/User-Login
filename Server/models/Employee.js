@@ -3,9 +3,9 @@ const EmployeeSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     email: String,
-    phone: Number,
+    phone: String,
     dateOfBirth: Date,
-    password: String,
+    password: String
 })
-const EmployeeModel = mongoose.model("Employee", EmployeeSchema)
+const EmployeeModel = mongoose.model("employees", EmployeeSchema)
 module.exports = EmployeeModel;
