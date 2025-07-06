@@ -45,8 +45,6 @@ app.put('/update/:id', (req, res) => {
     const { id } = req.params;
     const updateData = req.body;
     
-    console.log('Updating user:', id, updateData);
-    
     EmployeeModel.findByIdAndUpdate(id, updateData, { new: true })
         .then(updatedUser => {
             if (updatedUser) {
